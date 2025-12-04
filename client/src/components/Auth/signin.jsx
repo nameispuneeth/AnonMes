@@ -20,6 +20,7 @@ export default function SignIn() {
       })
     })
     const data=await res.json();
+    console.table(data)
     if(data.status==="ok"){
       toast.success("Login Successful");
       if(selected) localStorage.setItem("token",data.token);

@@ -1,5 +1,6 @@
 import SignIn from './components/Auth/signin';
 import SignUp from './components/Auth/signup';
+import Home from './components/home';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import "./index.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -12,6 +13,7 @@ export default function App() {
     <ToastContainer />
     <Router>
       <Routes>
+        <Route path="/" element={<Home/>} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>

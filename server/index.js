@@ -5,6 +5,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
+const jwt=require("jsonwebtoken");
+require("dotenv").config()
 
 mongoose.connect('mongodb://localhost:27017/secretMessage').then(()=>{
     console.log('Connected to MongoDB');
@@ -14,6 +16,7 @@ mongoose.connect('mongodb://localhost:27017/secretMessage').then(()=>{
 
 app.use(cors());
 app.use(express.json());
+const SecretCode=process.env.SecretCode;
 
 app.post("/api/signup",async (req,res)=>{
     const {username,email,password}=req.body;
@@ -32,12 +35,15 @@ app.post("/api/signup",async (req,res)=>{
 app.post("/api/signin",async (req,res) => {
     const {email,password}=req.body;
     try{
-        console.log(email,password);
         const user=await User.findOne({email:email});
-        console.log(user);
         if(!user) res.send({status:'error',error:'Email Doesnt Exist'});
         const PWD=await bcrypt.compare(password,user.password);
-        if(PWD) res.send({status:'ok'});
+        if(PWD){
+            const token=jwt.sign({email:user.email},SecretCode);
+            const urltoken=jwt.sign({id:user._id},SecretCode);
+
+            res.send({status:'ok',token:token,urltoken:urltoken});
+        }
         else res.send({status:'error',error:"Invalid Credentials"});
     }catch(e){
         res.send({status:'error',error:e.error});
