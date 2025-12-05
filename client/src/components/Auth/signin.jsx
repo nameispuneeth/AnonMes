@@ -9,6 +9,7 @@ export default function SignIn() {
   const [loading, setloading] = useState(false);
   const [selected,setSelected]=useState(false);
   const handleSubmit=async()=>{
+    setloading(true);
     const res=await fetch("http://localhost:8000/api/signin",{
       method:"POST",
       headers:{
@@ -20,26 +21,24 @@ export default function SignIn() {
       })
     })
     const data=await res.json();
-    console.table(data)
     if(data.status==="ok"){
       toast.success("Login Successful");
       if(selected){
         localStorage.setItem("token",data.token);
-        localStorage.setItem("URLtoken",data.urltoken);
       }
       else{
         sessionStorage.setItem("token",data.token);
-        sessionStorage.setItem("URLtoken",data.urltoken);
       }
 
       navigate("/");
     }else{
       toast.error(`${data.error}`)
     }
+    setloading(false);
   }
   let Spinner = () => {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-transparent bg-opacity-50 flex items-center justify-center z-50">
         <div className="w-12 h-12 border-4 border-white border-t-gray-700 rounded-full animate-spin"></div>
       </div>
     );
@@ -47,8 +46,8 @@ export default function SignIn() {
 
   return (
     <div className="bg-[radial-gradient(circle_at_center,#2c2c2c,#0d0d0d)] flex flex-col justify-center items-center min-h-screen min-w-screen text-white p-6 overflow-hidden" >
-      {loading && <Spinner />}
-      <div className="rounded-2xl shadow-lg p-10 w-full max-w-md bg-[rgba(0,0,0,0.4)] space-y-10">
+      {loading ? <Spinner />:
+      (<div className="rounded-2xl shadow-lg p-10 w-full max-w-md bg-[rgba(0,0,0,0.4)] space-y-10">
         <p className="text-center font-extrabold text-5xl mb-10">LOGIN</p>
         <input type="email" className="w-full h-12 rounded-lg bg-[rgba(50,50,50,1)] text-center text-lg font-light" placeholder="Enter Your Email" value={email} onChange={(e) => setemail(e.target.value)} required></input>
         <input type="password" className="w-full h-12 rounded-lg bg-[rgba(50,50,50,1)] text-center text-lg font-light" placeholder="Enter Your Password" value={password} onChange={(e) => setpassword(e.target.value)} required></input>
@@ -67,7 +66,7 @@ export default function SignIn() {
 
         </div>
 
-      </div>
+      </div>)}
     </div>
   )
 }

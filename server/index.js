@@ -54,6 +54,48 @@ app.post("/api/signin",async (req,res) => {
     }
 })
 
+app.get("/api/ValidToken/:token",async(req,res)=>{
+    const token=req.params.token;
+    try{
+        const user=await User.findOne({shareid:token});
+        if(!user) return res.send({status:'error',error:"Not A Valid URL"});
+        console.log(user);
+        res.send({status:'ok',name:user.username});
+    }catch(e){
+        res.send({status:'error',error:"Network Issue"});
+    }
+})
+
+app.get("/api/FetchUserDetails",async(req,res)=>{
+    const token=req.headers.authorization;
+    try{
+        const data=jwt.verify(token,SecretCode);
+        const user=await User.findOne({email:data.email});
+        if(!user) return res.send({status:'error',error:'User Not Found'});
+        res.send({status:'ok',messages:user.messages,shareid:user.shareid})
+    }catch(e){
+        res.send({status:'error',error:"Network Issues"});
+    }
+})
+
+app.post("/api/sendMessage/:token",async(req,res)=>{
+    const sharedid=req.params.token;
+    const message=req.body.message;
+    try{
+        const user=await User.findOne({shareid:sharedid});
+
+        if(!user) return res.send({status:'error',error:"Not A Valid URL"});
+        user.messages.push({
+            message:message,
+            sentAt:Date.now()
+        })
+        await user.save()
+        res.send({status:'ok'});
+    }catch(e){
+        res.send({status:'error',error:'Network Issues'})
+    }
+})
+
 app.get('/', (req, res) => {
     res.send('Hello World');
 });

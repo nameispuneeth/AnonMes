@@ -15,7 +15,7 @@ export default function SignUp() {
 
       let Spinner = () => {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-transparent bg-opacity-50 flex items-center justify-center z-50">
         <div className="w-12 h-12 border-4 border-white border-t-gray-700 rounded-full animate-spin"></div>
       </div>
     );
@@ -39,16 +39,17 @@ export default function SignUp() {
 
     let handleSubmit=async()=>{
         if(!username){
-            alert("UserName Is Required");
+            toast.error("UserName Is Required");
             return;
         }else if(!email){
-            alert("Email Is Required");
+            toast.error("Email Is Required");
             return;
         }
         if(password.length<5 || !containsAlphabets || !containsDigit || !containsSymbol){
-            alert("Password Doesn't Meet Requirements");
+            toast.error("Password Doesn't Meet Requirements");
             return;
         }
+        setloading(true);
         const res=await fetch("http://localhost:8000/api/signup",{
             method:"POST",
              headers: {
@@ -67,12 +68,12 @@ export default function SignUp() {
         }else{
             toast.error(`${data.error}`);
         }
+        setloading(false);
     }
 
     return (
         <div className="bg-[radial-gradient(circle_at_center,#2c2c2c,#0d0d0d)] flex flex-col justify-center items-center min-h-screen text-white p-6 overflow-hidden" >
-                        {loading && <Spinner/>}
-
+            {loading && <Spinner/>}
             <div className="rounded-2xl shadow-lg p-10 w-full max-w-md bg-[rgba(0,0,0,0.4)] space-y-10">
                 <p className="text-center font-extrabold text-5xl mb-10">REGISTER</p>
                 <input type="text" className="w-full h-12 rounded-lg bg-[rgba(50,50,50,1)] text-center text-lg font-light" placeholder="Enter Your Name" value={username} onChange={(e) => setusername(e.target.value)} required></input>

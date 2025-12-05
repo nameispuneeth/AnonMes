@@ -17,7 +17,6 @@ const userSchema = new mongoose.Schema({
     shareid:{type:String,unique:true},
     messages:[
         {
-            title:String,
             message:String,
             sentAt:Date
         }

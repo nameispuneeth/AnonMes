@@ -7,6 +7,7 @@ import "./App.css"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Message from './components/message';
+import NotFound from './NotFoundPage';
 
 
 export default function App() {
@@ -16,9 +17,10 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home/>} />
-        <Route path="/:token" element={<Message/>}/>
+        <Route path="/u/:token" element={<Message/>}/>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="*" element={<NotFound/>}/>
       </Routes>
     </Router>
     </>
