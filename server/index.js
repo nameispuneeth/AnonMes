@@ -41,7 +41,6 @@ app.post("/api/signup",async (req,res)=>{
 
 app.post("/api/signin",async (req,res) => {
     const {email,password}=req.body;
-    console.log(email,password);
     try{
         const user=await User.findOne({email:email});
         if(!user) return res.send({status:'error',error:'Email Doesnt Exist'});
@@ -130,7 +129,6 @@ app.get("/api/ChangeURL",async (req,res) => {
             newsharedId=nanoid(10);
         }
         user.shareid=newsharedId;
-        user.messages=[];
         await user.save();
         return res.send({status:'ok',urlToken:newsharedId});
         
