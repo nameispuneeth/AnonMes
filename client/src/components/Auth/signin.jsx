@@ -12,7 +12,7 @@ export default function SignIn() {
   const [selected,setSelected]=useState(false);
   const handleSubmit=async()=>{
     setloading(true);
-    const res=await fetch("http://localhost:8000/api/signin",{
+    const res=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/signin`,{
       method:"POST",
       headers:{
         'Content-Type':'application/json'
@@ -50,7 +50,7 @@ export default function SignIn() {
       setloading(true);
       if(authRes.code){
         const encodedCode = encodeURIComponent(authRes.code);
-        const response=await fetch(`http://localhost:8000/api/google/${encodedCode}`,{
+        const response=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/google/${encodedCode}`,{
           method:"GET"
         });
         const data=await response.json();

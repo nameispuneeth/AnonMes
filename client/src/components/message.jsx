@@ -28,7 +28,7 @@ export default function Message() {
         )
     }
     const handleSubmit = async () => {
-        const response = await fetch(`http://localhost:8000/api/sendMessage/${token}`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/sendMessage/${token}`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ export default function Message() {
 
     const isValidToken = async () => {
         setloading(true);
-        const response = await fetch(`http://localhost:8000/api/ValidToken/${token}`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/ValidToken/${token}`, {
             method: "GET"
         })
         const data = await response.json();

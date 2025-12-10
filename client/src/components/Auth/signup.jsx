@@ -53,7 +53,7 @@ export default function SignUp() {
             return;
         }
         setloading(true);
-        const res=await fetch("http://localhost:8000/api/signup",{
+        const res=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/signup`,{
             method:"POST",
              headers: {
                 'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ export default function SignUp() {
         try{
           if(authRes.code){
             const encodedCode = encodeURIComponent(authRes.code);
-            const response=await fetch(`http://localhost:8000/api/google/${encodedCode}`,{
+            const response=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/google/${encodedCode}`,{
               method:"GET"
             });
             const data=await response.json();

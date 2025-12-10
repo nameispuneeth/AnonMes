@@ -20,7 +20,7 @@ export default function Home() {
             navigate("/signin");
             return;
         }
-        let response = await fetch("http://localhost:8000/api/FetchUserDetails", {
+        let response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/FetchUserDetails`, {
             method: "GET",
             headers: {
                 'authorization': token,
@@ -65,7 +65,7 @@ export default function Home() {
     }
     const deleteMSG = async (val) => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-        const response = await fetch("http://localhost:8000/api/DeleteMSG", {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/DeleteMSG`, {
             method: "POST",
             headers: {
                 'authorization': token,
@@ -148,7 +148,7 @@ export default function Home() {
 
     const ChangeURL = async () => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-        const response = await fetch("http://localhost:8000/api/ChangeURL", {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/ChangeURL`, {
             method: "GET",
             headers: {
                 'authorization': token
@@ -204,7 +204,7 @@ export default function Home() {
         })
         if(!res.isConfirmed) return;
 
-        const response=await fetch("http://localhost:8000/api/changetoCustomURL",{
+        const response=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/changetoCustomURL`,{
             method:"POST",
             headers:{
                 'authorization':token,
