@@ -10,8 +10,8 @@ export default function Home() {
     const [URL,setURL] = useState("");
     const [loading, setloading] = useState(false);
     const [messages, setmessages] = useState([]);
-
-
+    const [changingURL,setchangingURL]=useState(false);
+    const [customURL,setcustomURL]=useState(false);
 
     const fetchDetails = async () => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -148,6 +148,7 @@ export default function Home() {
 
     const ChangeURL = async () => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        setchangingURL(true);
         const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/ChangeURL`, {
             method: "GET",
             headers: {
@@ -161,6 +162,7 @@ export default function Home() {
         } else {
             toast.error(data.error);
         }
+        setchangingURL(false);
     }
 
     const CustomURL = async() => {
@@ -203,6 +205,7 @@ export default function Home() {
             }
         })
         if(!res.isConfirmed) return;
+        setcustomURL(true);
 
         const response=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/changetoCustomURL`,{
             method:"POST",
@@ -223,6 +226,7 @@ export default function Home() {
         }else{
             toast.error(data.error);
         }
+        setcustomURL(false);
 
     }
 
@@ -262,8 +266,8 @@ export default function Home() {
                             }}> Share
 
                             </button>
-                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => ChangeURL()}> Change My URL </button>
-                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => CustomURL()}> Custom URL </button>
+                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => ChangeURL()}> {changingURL?MSGSpinner():"Change My URL "}</button>
+                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => CustomURL()}> {customURL?MSGSpinner():"Custom URL "} </button>
 
                         </div>
                         <hr className="mt-5 border-t border-dashed" />

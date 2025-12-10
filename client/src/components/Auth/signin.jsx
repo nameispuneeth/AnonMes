@@ -10,8 +10,17 @@ export default function SignIn() {
   const [password, setpassword] = useState("");
   const [loading, setloading] = useState(false);
   const [selected,setSelected]=useState(false);
+  const [loginloading,setloginloading]=useState(false);
+
+  const MSGSpinner = () => {
+    return (
+        <div className="flex justify-center items-center">
+            <div className="w-6 h-6 border-4 border-gray-700 border-t-gray-200 rounded-full animate-spin"></div>
+        </div>
+    );
+};
   const handleSubmit=async()=>{
-    setloading(true);
+    setloginloading(true);
     const res=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/signin`,{
       method:"POST",
       headers:{
@@ -36,8 +45,9 @@ export default function SignIn() {
     }else{
       toast.error(`${data.error}`)
     }
-    setloading(false);
+    setloginloading(false);
   }
+
   let Spinner = () => {
     return (
       <div className="fixed inset-0 bg-transparent bg-opacity-10 flex items-center justify-center z-50">
@@ -45,9 +55,11 @@ export default function SignIn() {
       </div>
     );
   }
+
   const responseFromGoogle=async(authRes)=>{
+
     try{
-      setloading(true);
+      setloginloading(true);
       if(authRes.code){
         const encodedCode = encodeURIComponent(authRes.code);
         const response=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/google/${encodedCode}`,{
@@ -65,7 +77,7 @@ export default function SignIn() {
     }catch(e){
       toast.error("Unable To Access");
     }
-    setloading(false);
+    setloginloading(false);
   }
   const googleLogin=useGoogleLogin({
     onSuccess:responseFromGoogle,
@@ -88,7 +100,7 @@ export default function SignIn() {
               <p className="cursor-pointer md:text-base text-sm">Remember Me </p>
             </div>
           </div>
-          <button className="w-full h-14 rounded-lg bg-black border-2 cursor-pointer border-gray-600 text-center text-lg font-bold mt-6 mb-6" onClick={()=>handleSubmit()}>Login</button>
+          <button className="w-full h-14 rounded-lg bg-black border-2 cursor-pointer border-gray-600 text-center text-lg font-bold mt-6 mb-6" onClick={()=>handleSubmit()}>{loginloading?MSGSpinner():"Login"}</button>
           <button className="w-full h-14 rounded-lg bg-black border-2 cursor-pointer border-gray-600 text-center text-lg font-bold mb-6 flex justify-center items-center gap-3" onClick={googleLogin}><img src={GoogleLogo} height={25} width={25}></img><span>Continue With Google</span></button>
           <span className="flex gap-2 text-center justify-center text-sm">Dont Have An Account ?  
             <p className="font-bold  cursor-pointer" onClick={()=>navigate("/signup")}> Register</p>

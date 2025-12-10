@@ -10,6 +10,7 @@ export default function Message() {
     const [isvalid, setisvalid] = useState(true);
     const [loading, setloading] = useState(false);
     const [msgSentSuc, setmsgSentSuc] = useState(false);
+    const [msgSending,setmsgSending]=useState(false);
 
     let Spinner = () => {
         return (
@@ -18,6 +19,14 @@ export default function Message() {
             </div>
         );
     }
+    const MSGSpinner = () => {
+        return (
+            <div className="flex justify-center items-center">
+                <div className="w-6 h-6 border-4 border-gray-700 border-t-gray-200 rounded-full animate-spin"></div>
+            </div>
+        );
+    };
+
     const messageSent = () => {
         return (
             <>
@@ -28,6 +37,7 @@ export default function Message() {
         )
     }
     const handleSubmit = async () => {
+        setmsgSending(true);
         const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/sendMessage/${token}`, {
             method: "POST",
             headers: {
@@ -46,6 +56,7 @@ export default function Message() {
         } else {
             toast.error(data.error);
         }
+        setmsgSending(false);
     }
 
     const isValidToken = async () => {
@@ -79,7 +90,7 @@ export default function Message() {
                                             <>
                                                 <p className="text-white font-medium text-xl"> You Are Sending Message To <span className="font-bold text-gray-300">` {name} `</span></p>
                                                 <textarea rows={10} cols={20} value={msg} onChange={(e) => setmsg(e.target.value)} className="p-4 bg-gray-950 font-extralight w-full text-2xl custom-scrollbar border-2 border-gray-500" ></textarea>
-                                                <button className="w-full h-14 rounded-lg bg-[rgba(30,30,30,1)] hover:bg-black border-2 cursor-pointer border-gray-600 text-center text-lg font-bold mt-6 mb-6" onClick={() => handleSubmit()}>Submit</button>
+                                                <button className="w-full h-14 rounded-lg bg-[rgba(30,30,30,1)] hover:bg-black border-2 cursor-pointer border-gray-600 text-center text-lg font-bold mt-6 mb-6" onClick={() => handleSubmit()}>{msgSending?MSGSpinner():"Submit"}</button>
                                             </>
                                         )}
                                 </div>
