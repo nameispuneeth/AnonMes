@@ -61,6 +61,7 @@ app.get("/api/ValidToken/:token",async(req,res)=>{
     try{
         const user=await User.findOne({shareid:token});
         if(!user) return res.send({status:'error',error:"Not A Valid URL"});
+        if(user.shareidexpiryDate && user.shareidexpiryDate <= new Date()) return res.send({status:"error",error:"URL Expired"});
         res.send({status:'ok',name:user.username});
     }catch(e){
         res.send({status:'error',error:"Network Issue"});
@@ -73,6 +74,7 @@ app.get("/api/FetchUserDetails",async(req,res)=>{
         const data=jwt.verify(token,SecretCode);
         const user=await User.findOne({email:data.email});
         if(!user) return res.send({status:'error',error:'User Not Found'});
+        if(user.shareidexpiryDate<new Date()) return res.send({status:'ok',messages:user.messages,shareid:user.shareid,Expired:true});
         res.send({status:'ok',messages:user.messages,shareid:user.shareid})
     }catch(e){
         res.send({status:'error',error:"Network Issues"});
@@ -187,6 +189,22 @@ app.post("/api/changetoCustomURL",async(req,res)=>{
         return res.send({status:'error',error:'Network Issues'});
     }
 })
+
+app.post("/api/setExpiry",async(req,res)=>{
+    const date=req.body.expiry;
+    const token=req.headers.authorization;
+    try{
+        const decoded=jwt.verify(token,SecretCode);
+        const user=await User.findOne({email:decoded.email});
+        if(!user) return res.send({status:'error',error:"User Not Found"});
+        user.shareidexpiryDate=date;
+        await user.save();
+        res.send({status:"ok"});
+    }catch(e){
+        res.send({status:'error',error:"Network Issues"});
+    }
+})
+
 app.get('/', (req, res) => {
     res.send('Hello World');
 });

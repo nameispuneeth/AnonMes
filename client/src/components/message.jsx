@@ -26,16 +26,7 @@ export default function Message() {
             </div>
         );
     };
-
-    const messageSent = () => {
-        return (
-            <>
-                <p className=" text-xl font-extrabold text-green-700"> Message Sent Successfully 🎉</p>
-                <p className="p-4 border-2 rounded-sm cursor-pointer border-gray-600 bg-[rgba(50,50,50,1)] font-extrabold hover:bg-black text-white" onClick={() => navigate("/")}> Get Your Own Link </p>
-                <p className="p-4 border-2 rounded-sm border-gray-600 cursor-pointer bg-[rgba(50,50,50,1)] font-extrabold hover:bg-black text-white" onClick={() => setmsgSentSuc(false)}> Send Message Again </p>
-            </>
-        )
-    }
+    
     const handleSubmit = async () => {
         setmsgSending(true);
         const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/sendMessage/${token}`, {
@@ -75,7 +66,22 @@ export default function Message() {
     }
     useEffect(() => {
         isValidToken();
-    }, [])
+    }, []);
+    
+    const MSGSent=async()=>{
+        await isValidToken();
+        setmsgSentSuc(false);
+    }
+
+    const messageSent = () => {
+        return (
+            <>
+                <p className=" text-xl font-extrabold text-green-700"> Message Sent Successfully 🎉</p>
+                <p className="p-4 border-2 rounded-sm cursor-pointer border-gray-600 bg-[rgba(50,50,50,1)] font-extrabold hover:bg-black text-white" onClick={() => navigate("/")}> Get Your Own Link </p>
+                <p className="p-4 border-2 rounded-sm border-gray-600 cursor-pointer bg-[rgba(50,50,50,1)] font-extrabold hover:bg-black text-white" onClick={() => MSGSent()}> Send Message Again </p>
+            </>
+        )
+    }
 
     return (
         <>

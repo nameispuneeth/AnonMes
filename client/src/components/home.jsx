@@ -7,11 +7,12 @@ import Swal from "sweetalert2";
 export default function Home() {
     const [messagesLoading, setmessagesLoading] = useState(false);
     const navigate = useNavigate();
-    const [URL,setURL] = useState("");
+    const [URL, setURL] = useState("");
     const [loading, setloading] = useState(false);
     const [messages, setmessages] = useState([]);
-    const [changingURL,setchangingURL]=useState(false);
-    const [customURL,setcustomURL]=useState(false);
+    const [changingURL, setchangingURL] = useState(false);
+    const [customURL, setcustomURL] = useState(false);
+    const [settingExpiry, setsettingExpiry] = useState(false);
 
     const fetchDetails = async () => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -31,6 +32,7 @@ export default function Home() {
         let data = await response.json();
 
         if (data.status == "ok") {
+            if(data.Expired) toast.error("Your URL is Expired");
             setmessages(data.messages.reverse());
             setURL(`${window.location.origin}/u/${data.shareid}`);
         } else {
@@ -85,14 +87,7 @@ export default function Home() {
             toast.error(data.error);
         }
     }
-    let MessageCard = ({ val }) => {
-        const [expanded, setexpanded] = useState(false);
-        const limit = 100;
-        const [data, setdata] = useState((val.message).substring(0, limit));
-
-        const pastdate = new Date(val.sentAt);
-        const currDate = new Date();
-        const diff = (currDate - pastdate) / 1000;
+    const DateDiff = (diff) => {
         let dateStr = "";
         let years = Math.floor(diff / (60 * 60 * 24 * 365));
         let months = Math.floor(diff / (60 * 60 * 24 * 30));
@@ -102,13 +97,26 @@ export default function Home() {
         let minutes = Math.floor(diff / 60);
         let seconds = Math.floor(diff);
 
-        if (years > 0) dateStr = `${years} ${years > 1 ? 'Years' : 'Year'} Ago`
-        else if (months > 0) dateStr = `${months} ${months > 1 ? 'Months' : 'Month'} Ago`
-        else if (weeks > 0) dateStr = `${weeks} ${weeks > 1 ? 'Weeks' : 'Week'} Ago`
-        else if (days > 0) dateStr = `${days} ${days > 1 ? 'Days' : 'Day'} Ago`
-        else if (hours > 0) dateStr = `${hours} ${hours > 1 ? 'Hours' : 'Hour'} Ago`
-        else if (minutes > 0) dateStr = `${minutes} ${minutes > 1 ? 'Minutes' : 'Minute'} Ago`
-        else dateStr = `${seconds} ${seconds > 1 ? 'Seconds' : 'Second'} Ago`
+        if (years > 0) dateStr = `${years} ${years > 1 ? 'Years' : 'Year'}`
+        else if (months > 0) dateStr = `${months} ${months > 1 ? 'Months' : 'Month'}`
+        else if (weeks > 0) dateStr = `${weeks} ${weeks > 1 ? 'Weeks' : 'Week'}`
+        else if (days > 0) dateStr = `${days} ${days > 1 ? 'Days' : 'Day'}`
+        else if (hours > 0) dateStr = `${hours} ${hours > 1 ? 'Hours' : 'Hour'}`
+        else if (minutes > 0) dateStr = `${minutes} ${minutes > 1 ? 'Minutes' : 'Minute'}`
+        else dateStr = `${seconds} ${seconds > 1 ? 'Seconds' : 'Second'}`
+
+        return dateStr;
+    }
+
+    let MessageCard = ({ val }) => {
+        const [expanded, setexpanded] = useState(false);
+        const limit = 100;
+        const [data, setdata] = useState((val.message).substring(0, limit));
+
+        const pastdate = new Date(val.sentAt);
+        const currDate = new Date();
+        const diff = (currDate - pastdate) / 1000;
+        let dateStr = DateDiff(diff) + " Ago";
 
         return (
             <div className="bg-[rgba(50,50,50,1)] rounded-sm p-2 m-3 overflow-hidden">
@@ -165,12 +173,13 @@ export default function Home() {
         setchangingURL(false);
     }
 
-    const CustomURL = async() => {
+
+    const CustomURL = async () => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-        const res=await Swal.fire({
+        const res = await Swal.fire({
             title: "Create your link",
-            background:"#1e1e1e",
-            color:'white',
+            background: "#1e1e1e",
+            color: 'white',
             html: `
       <div style="display:flex;align-items:center;margin-top:10px;
         padding:8px;border:1px solid #ccc;border-radius:8px;overflow:hidden;">
@@ -192,11 +201,11 @@ export default function Home() {
                     Swal.showValidationMessage("Invalid! Use only letters, numbers, _ or -");
                     return false;
                 }
-                else if(value.length<8){
+                else if (value.length < 8) {
                     Swal.showValidationMessage("The Length Of URL have to be greater than 8 letters.");
                     return false;
                 }
-                else if(value.length>=12){
+                else if (value.length >= 12) {
                     Swal.showValidationMessage("The Length Of URL have to be less than 11 letters.");
                     return false;
                 }
@@ -204,29 +213,78 @@ export default function Home() {
                 return value;
             }
         })
-        if(!res.isConfirmed) return;
+        if (!res.isConfirmed) return;
         setcustomURL(true);
 
-        const response=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/changetoCustomURL`,{
-            method:"POST",
-            headers:{
-                'authorization':token,
-                'Content-Type':'application/json'
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/changetoCustomURL`, {
+            method: "POST",
+            headers: {
+                'authorization': token,
+                'Content-Type': 'application/json'
             },
-            body:JSON.stringify({
-                URL:`${res.value}`
+            body: JSON.stringify({
+                URL: `${res.value}`
             })
         })
 
-        const data=await response.json();
+        const data = await response.json();
 
-        if(data.status=="ok"){
+        if (data.status == "ok") {
             toast.success("URL Changed Succesfully");
             setURL(`${window.location.origin}/u/${res.value}`);
-        }else{
+        } else {
             toast.error(data.error);
         }
         setcustomURL(false);
+
+    }
+
+    const SetExpiry = async () => {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+        const { value: expiry } = await Swal.fire({
+            title: "Select Expiry Date & Time",
+            html: `
+        <input type="datetime-local" id="expiry" class="swal2-input" />
+      `,
+            background: "#1e1e1e",
+            color: "white",
+            showCancelButton: true,
+            focusConfirm: false,
+            preConfirm: () => {
+                const val = document.getElementById("expiry").value;
+                console.log(val);
+                if (!val) {
+                    Swal.showValidationMessage("Please choose a date & time");
+                    return false;
+                } else if (new Date(val) <= new Date()) {
+                    Swal.showValidationMessage("Date Has To After Current Date And Time");
+                    return false;
+                }
+                return val;
+            }
+        });
+        if (expiry) {
+            setsettingExpiry(true);
+            const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/setExpiry`, {
+                method: "POST",
+                headers: {
+                    'authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    expiry: new Date(expiry)
+                })
+            })
+            const data = await response.json();
+            setsettingExpiry(false);
+            if (data.status == "ok") {
+                toast.success(`The URL Will Expire On ${new Date(expiry).toLocaleString()}`);
+            }else{
+                toast.error(data.error);
+            }
+        }
+
 
     }
 
@@ -266,8 +324,10 @@ export default function Home() {
                             }}> Share
 
                             </button>
-                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => ChangeURL()}> {changingURL?MSGSpinner():"Change My URL "}</button>
-                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => CustomURL()}> {customURL?MSGSpinner():"Custom URL "} </button>
+                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => ChangeURL()}> {changingURL ? MSGSpinner() : "Change My URL "}</button>
+                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => CustomURL()}> {customURL ? MSGSpinner() : "Custom URL "} </button>
+                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => SetExpiry()}> {settingExpiry ? MSGSpinner() : "Set Expiry For URL "}</button>
+
 
                         </div>
                         <hr className="mt-5 border-t border-dashed" />

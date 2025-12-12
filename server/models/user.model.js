@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
     },
 
     shareid:{type:String,unique:true},
+    shareidexpiryDate:{type:Date,default:null},
     messages:[
         {
             message:String,
