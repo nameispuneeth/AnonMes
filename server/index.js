@@ -61,7 +61,7 @@ app.get("/api/ValidToken/:token",async(req,res)=>{
     try{
         const user=await User.findOne({shareid:token});
         if(!user) return res.send({status:'error',error:"Not A Valid URL"});
-        if(user.shareidexpiryDate && user.shareidexpiryDate <= new Date()) return res.send({status:"error",error:"URL Expired"});
+        if(user.shareidexpiryDate!=null && user.shareidexpiryDate <= new Date()) return res.send({status:"error",error:"URL Expired"});
         res.send({status:'ok',name:user.username});
     }catch(e){
         res.send({status:'error',error:"Network Issue"});
@@ -74,7 +74,7 @@ app.get("/api/FetchUserDetails",async(req,res)=>{
         const data=jwt.verify(token,SecretCode);
         const user=await User.findOne({email:data.email});
         if(!user) return res.send({status:'error',error:'User Not Found'});
-        if(user.shareidexpiryDate<new Date()) return res.send({status:'ok',messages:user.messages,shareid:user.shareid,Expired:true});
+        if(user.shareidexpiryDate!=null && user.shareidexpiryDate<new Date()) return res.send({status:'ok',messages:user.messages,shareid:user.shareid,Expired:true});
         res.send({status:'ok',messages:user.messages,shareid:user.shareid})
     }catch(e){
         res.send({status:'error',error:"Network Issues"});
@@ -86,7 +86,6 @@ app.post("/api/sendMessage/:token",async(req,res)=>{
     const message=req.body.message;
     try{
         const user=await User.findOne({shareid:sharedid});
-
         if(!user) return res.send({status:'error',error:"Not A Valid URL"});
         user.messages.push({
             message:message,
@@ -131,7 +130,7 @@ app.get("/api/ChangeURL",async (req,res) => {
             newsharedId=nanoid(10);
         }
         user.shareid=newsharedId;
-        user.shareidexpiryDate=NULL;
+        user.shareidexpiryDate=null;
         await user.save();
         return res.send({status:'ok',urlToken:newsharedId});
         
@@ -184,7 +183,7 @@ app.post("/api/changetoCustomURL",async(req,res)=>{
         if(!user) return res.send({status:'error',error:'User Not Found'});
         if(dummyuser && dummyuser.username!=user.username) return res.send({status:'error',error:'URL exists. Choose Another.'});
         user.shareid=URL;
-        user.shareidexpiryDate=NULL;
+        user.shareidexpiryDate=null;
         await user.save();
         return res.send({status:'ok'});
     }catch(e){

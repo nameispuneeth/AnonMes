@@ -30,7 +30,6 @@ export default function Home() {
         })
 
         let data = await response.json();
-
         if (data.status == "ok") {
             if(data.Expired) toast.error("Your URL is Expired");
             setmessages(data.messages.reverse());
@@ -253,7 +252,6 @@ export default function Home() {
             focusConfirm: false,
             preConfirm: () => {
                 const val = document.getElementById("expiry").value;
-                console.log(val);
                 if (!val) {
                     Swal.showValidationMessage("Please choose a date & time");
                     return false;
