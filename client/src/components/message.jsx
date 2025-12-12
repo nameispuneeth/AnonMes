@@ -59,7 +59,7 @@ export default function Message() {
         if (data.status == "ok") {
             setname(data.name);
         } else {
-            toast.error("Not A Valid URL");
+            toast.error(data.error);
             setisvalid(false);
         }
         setloading(false);
