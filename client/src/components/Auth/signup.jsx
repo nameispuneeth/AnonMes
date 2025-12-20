@@ -62,7 +62,8 @@ export default function SignUp() {
             return;
         }
         setloginloading(true);
-        const res = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/signup`, {
+        //${import.meta.env.VITE_APP_API_BACKEND_URL}
+        const res = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/auth/signup`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -88,7 +89,7 @@ export default function SignUp() {
         try {
             if (authRes.code) {
                 const encodedCode = encodeURIComponent(authRes.code);
-                const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/google/${encodedCode}`, {
+                const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/auth/google/${encodedCode}`, {
                     method: "GET"
                 });
                 const data = await response.json();

@@ -21,7 +21,8 @@ export default function SignIn() {
 };
   const handleSubmit=async()=>{
     setloginloading(true);
-    const res=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/signin`,{
+    //${import.meta.env.VITE_APP_API_BACKEND_URL}
+    const res=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/auth/signin`,{
       method:"POST",
       headers:{
         'Content-Type':'application/json'
@@ -62,7 +63,7 @@ export default function SignIn() {
       setloginloading(true);
       if(authRes.code){
         const encodedCode = encodeURIComponent(authRes.code);
-        const response=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/google/${encodedCode}`,{
+        const response=await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/auth/google/${encodedCode}`,{
           method:"GET"
         });
         const data=await response.json();

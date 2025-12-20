@@ -29,10 +29,11 @@ export default function Message() {
     
     const handleSubmit = async () => {
         setmsgSending(true);
-        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/sendMessage/${token}`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/sendmsg/sendMessage`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'authorization':token
             },
             body: JSON.stringify({
                 message: msg
@@ -50,10 +51,13 @@ export default function Message() {
         setmsgSending(false);
     }
 
-    const isValidToken = async () => {
+    const isvalidtoken = async () => {
         setloading(true);
-        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/ValidToken/${token}`, {
-            method: "GET"
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/sendmsg/validtoken`, {
+            method: "GET",
+            headers:{
+                'authorization':token
+            },
         })
         const data = await response.json();
         if (data.status == "ok") {
@@ -65,11 +69,11 @@ export default function Message() {
         setloading(false);
     }
     useEffect(() => {
-        isValidToken();
+        isvalidtoken();
     }, []);
     
     const MSGSent=async()=>{
-        await isValidToken();
+        await isvalidtoken();
         setmsgSentSuc(false);
     }
 

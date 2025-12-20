@@ -21,7 +21,8 @@ export default function Home() {
             navigate("/signin");
             return;
         }
-        let response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/FetchUserDetails`, {
+        console.log(token);
+        let response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/user/fetchuserdetails`, {
             method: "GET",
             headers: {
                 'authorization': token,
@@ -30,6 +31,7 @@ export default function Home() {
         })
 
         let data = await response.json();
+        console.log(data);
         if (data.status == "ok") {
             if(data.Expired) toast.error("Your URL is Expired");
             setmessages(data.messages.reverse());
@@ -64,9 +66,9 @@ export default function Home() {
             </div>
         );
     }
-    const deleteMSG = async (val) => {
+    const deletemsg = async (val) => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/DeleteMSG`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/user/deletemsg`, {
             method: "POST",
             headers: {
                 'authorization': token,
@@ -144,7 +146,7 @@ export default function Home() {
                         )}
                     </div>
 
-                    <Trash size={16} className="cursor-pointer shrink-0 m-2" onClick={() => deleteMSG(val)} />
+                    <Trash size={16} className="cursor-pointer shrink-0 m-2" onClick={() => deletemsg(val)} />
                 </div>
 
                 <p className="text-sm font-extralight">{dateStr}</p>
@@ -156,7 +158,7 @@ export default function Home() {
     const ChangeURL = async () => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         setchangingURL(true);
-        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/ChangeURL`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/user/changeurl`, {
             method: "GET",
             headers: {
                 'authorization': token
@@ -215,7 +217,7 @@ export default function Home() {
         if (!res.isConfirmed) return;
         setcustomURL(true);
 
-        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/changetoCustomURL`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/user/tocustomurl`, {
             method: "POST",
             headers: {
                 'authorization': token,
@@ -238,7 +240,7 @@ export default function Home() {
 
     }
 
-    const SetExpiry = async () => {
+    const setexpiry = async () => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
         const { value: expiry } = await Swal.fire({
@@ -264,7 +266,7 @@ export default function Home() {
         });
         if (expiry) {
             setsettingExpiry(true);
-            const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/setExpiry`, {
+            const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/user/setexpiry`, {
                 method: "POST",
                 headers: {
                     'authorization': token,
@@ -324,7 +326,7 @@ export default function Home() {
                             </button>
                             <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => ChangeURL()}> {changingURL ? MSGSpinner() : "Change My URL "}</button>
                             <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => CustomURL()}> {customURL ? MSGSpinner() : "Custom URL "} </button>
-                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => SetExpiry()}> {settingExpiry ? MSGSpinner() : "Set Expiry For URL "}</button>
+                            <button className="m-2 bg-black border border-gray-300 items-center cursor-pointer p-3" onClick={() => setexpiry()}> {settingExpiry ? MSGSpinner() : "Set Expiry For URL "}</button>
 
 
                         </div>
