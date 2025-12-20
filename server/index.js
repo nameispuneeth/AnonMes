@@ -3,10 +3,7 @@ const app = express();
 const port = 8000;
 const cors = require('cors');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const User = require('./models/user.model');
-const jwt=require("jsonwebtoken");
-const {nanoid}=require("nanoid");
+
 require("dotenv").config()
 const authRoutes = require("./routes/authRoutes");
 const userRoutes=require("./routes/userRoutes")

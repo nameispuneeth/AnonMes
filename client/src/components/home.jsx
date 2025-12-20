@@ -158,7 +158,7 @@ export default function Home() {
     const ChangeURL = async () => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         setchangingURL(true);
-        const response = await fetch(`${import.meta.env.VITE_APP_API_BACKEND_URL}/api/user/changeurl`, {
+        const response = await fetch(`http://localhost:8000/api/user/changeurl`, {
             method: "GET",
             headers: {
                 'authorization': token

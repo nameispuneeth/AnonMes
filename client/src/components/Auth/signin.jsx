@@ -69,7 +69,7 @@ export default function SignIn() {
         const data=await response.json();
         if(data.status=="ok"){
           toast.success("Login Successful.");
-          sessionStorage.setItem("token",data.token);
+          localStorage.setItem("token",data.token);
           navigate("/");
         }else{
           toast.error(data.error);

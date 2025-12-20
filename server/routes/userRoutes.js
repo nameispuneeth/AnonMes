@@ -2,6 +2,7 @@ const express=require("express");
 const User=require("../models/user.model");
 const router=express.Router();
 const jwt=require("jsonwebtoken");
+const {nanoid}=require("nanoid");
 const jwtVerification=require("../middlewares/authValidation");
 
 router.use(jwtVerification);
@@ -49,6 +50,7 @@ router.get("/changeurl",async (req,res) => {
         user.shareid=newsharedId;
         user.shareidexpiryDate=null;
         await user.save();
+
         return res.send({status:'ok',urlToken:newsharedId});
         
     }catch(e){

@@ -95,7 +95,7 @@ export default function SignUp() {
                 const data = await response.json();
                 if (data.status == "ok") {
                     toast.success("Successfully Registered.");
-                    sessionStorage.setItem("token", data.token);
+                    localStorage.setItem("token", data.token);
                     navigate("/");
                 } else {
                     toast.error(data.error);
