@@ -1,42 +1,42 @@
-# AnonMes 🔒✉️
+# AnonMes
 
 **AnonMes** is a web-based anonymous messaging platform that allows users to receive secret messages through a unique, shareable URL — without revealing the sender’s identity. It is designed to be simple, secure, and real-time.
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🔗 **Unique Shareable URL**  
+- **Unique Shareable URL**  
   Each user gets a unique link that anyone can use to send anonymous messages.
 
-- 🔐 **Authentication**
+- **Authentication**
   - Normal Email & Password Authentication
   - Google OAuth Authentication
 
-- 🕒 **Expiry Control**
+-  **Expiry Control**
   - Set an expiry date for message links
   - Messages stop accepting submissions after expiry
 
-- 🧩 **Custom URLs**
+-  **Custom URLs**
   - Users can set a custom URL
   - Option to regenerate a new URL anytime
 
-- ⚡ **Real-Time Messaging**
+- **Real-Time Messaging**
   - Messages are delivered instantly using **WebSockets (Socket.IO)**
 
-- 📋 **Copy & Share**
+- **Copy & Share**
   - One-click copy of the anonymous message link
   - Easily share across platforms
 
-- 🌗 **UI/UX**
+- **UI/UX**
   - Personalized UI experience
 
-- 📱 **Responsive Design**
+- **Responsive Design**
   - Works smoothly on desktop and mobile devices
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 - React
@@ -53,7 +53,7 @@
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
 1. User signs up or logs in (Email/Password or Google).
 2. A **unique anonymous URL** is generated for the user.
@@ -66,7 +66,7 @@
 
 ---
 
-## 📌 Use Cases
+## Use Cases
 
 - Receiving anonymous feedback
 - Fun secret messages among friends
@@ -75,7 +75,7 @@
 
 ---
 
-## 🔐 Security
+## Security
 
 - JWT-based authentication
 - Secure OAuth login
